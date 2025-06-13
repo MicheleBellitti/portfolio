@@ -9,16 +9,32 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-three/drei": "^10.2.0",
+    "@react-three/fiber": "^9.1.2",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.50.0",
+    "clsx": "^2.1.1",
+    "fabric": "^6.7.0",
+    "framer-motion": "^12.18.0",
+    "lucide-react": "^0.515.0",
+    "next": "15.3.3",
+    "next-themes": "^0.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.3"
+    "react-hook-form": "^7.57.0",
+    "react-hot-toast": "^2.5.2",
+    "tailwind-merge": "^3.3.1",
+    "three": "^0.177.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@tailwindcss/postcss": "^4.1.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.5",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
