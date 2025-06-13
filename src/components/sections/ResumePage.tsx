@@ -97,48 +97,83 @@ export default function ResumePage() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="max-w-4xl mx-auto">
           {loading ? (
-            <div className="col-span-2 flex justify-center items-center">
+            <div className="flex justify-center items-center py-20">
               <Loader2 className="w-8 h-8 animate-spin" />
-                </div>
+            </div>
           ) : (
             <>
-              {resumeUrl && (
-                <div className="col-span-2 md:col-span-1">
-                  <div className="relative h-0 pb-[150%]">
-                    <iframe
-                      src={resumeUrl}
-                      className="w-full h-full"
-                      title="Resume"
-                      allowFullScreen
-                    />
+              {resumeUrl ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="space-y-8"
+                >
+                  {/* Download Button */}
+                  <div className="flex justify-center">
+                    <a
+                      href={resumeUrl}
+                      download
+                      className="bg-primary-500 text-white px-8 py-3 rounded-lg inline-flex items-center gap-3 hover:bg-primary-600 transition-colors text-lg font-medium"
+                    >
+                      <Download className="w-6 h-6" />
+                      Download Resume
+                    </a>
                   </div>
+
+                  {/* PDF Viewer */}
+                  <div className="bg-white dark:bg-dark-surface rounded-lg shadow-lg overflow-hidden">
+                    <div className="relative w-full" style={{ paddingBottom: '141.42%' }}>
+                      <iframe
+                        src={resumeUrl}
+                        className="absolute top-0 left-0 w-full h-full"
+                        title="Resume"
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+
+                  {/* Admin Upload Section */}
+                  {user?.isAdmin && (
+                    <div className="mt-12 p-6 bg-gray-100 dark:bg-dark-surface rounded-lg">
+                      <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Upload className="w-5 h-5" />
+                        Update Resume (Admin)
+                      </h3>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        onChange={handleFileUpload}
+                        className="block w-full text-sm text-gray-900 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-100 file:text-primary-700 hover:file:bg-primary-200 dark:file:bg-primary-900 dark:file:text-primary-300 cursor-pointer"
+                      />
+                    </div>
+                  )}
+                </motion.div>
+              ) : (
+                <div className="text-center py-20">
+                  <FileText className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+                  <p className="text-xl text-gray-600 dark:text-gray-400">
+                    No resume available yet.
+                  </p>
+                  {user?.isAdmin && (
+                    <div className="mt-8 p-6 bg-gray-100 dark:bg-dark-surface rounded-lg max-w-md mx-auto">
+                      <h3 className="text-xl font-semibold mb-4">Upload Resume</h3>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        onChange={handleFileUpload}
+                        className="block w-full text-sm text-gray-900 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-100 file:text-primary-700 hover:file:bg-primary-200 dark:file:bg-primary-900 dark:file:text-primary-300 cursor-pointer"
+                      />
+                    </div>
+                  )}
                 </div>
               )}
-              <div className="col-span-2 md:col-span-1">
-                <div className="flex flex-col gap-4">
-                  <h2 className="text-2xl font-bold">Upload New Resume</h2>
-                  <input
-                    type="file"
-                    accept=".pdf"
-                    onChange={handleFileUpload}
-                    className="border border-gray-300 rounded-md p-2"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleFileUpload(null)}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                  >
-                    Upload
-                  </button>
-                </div>
-              )}
-            <button/>
+            </>
           )}
         </div>
       </div>
     </section>
-  </div>
   )
 }
