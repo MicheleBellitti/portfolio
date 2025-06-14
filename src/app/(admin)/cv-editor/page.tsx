@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function CVEditorPage() {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user || user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {

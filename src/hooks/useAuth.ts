@@ -10,9 +10,24 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const supabase = createClient()
+  
+  // Check if Supabase is properly configured
+  const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && 
+    process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co'
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      // Demo mode: Check localStorage for demo user
+      const demoUser = localStorage.getItem('demo-user')
+      if (demoUser) {
+        setUser(JSON.parse(demoUser))
+      }
+      setLoading(false)
+      return
+    }
+
+    const supabase = createClient()
+    
     const checkUser = async () => {
       try {
         const { data: { user: authUser } } = await supabase.auth.getUser()
@@ -25,7 +40,7 @@ export function useAuth() {
           })
         }
       } catch (error) {
-        console.error('Error checking auth:', error)
+        console.log('Auth check error (this is normal if Supabase is not set up):', error)
       } finally {
         setLoading(false)
       }
@@ -46,10 +61,31 @@ export function useAuth() {
     })
 
     return () => subscription.unsubscribe()
-  }, [supabase, router])
+  }, [isSupabaseConfigured, router])
 
   const signIn = async (email: string, password: string) => {
+    if (!isSupabaseConfigured) {
+      // Demo mode login
+      if (email === process.env.NEXT_PUBLIC_ADMIN_EMAIL || email === 'test@example.com') {
+        const demoUser: User = {
+          id: 'demo-user-id',
+          email: email,
+          isAdmin: true
+        }
+        setUser(demoUser)
+        localStorage.setItem('demo-user', JSON.stringify(demoUser))
+        toast.success('Successfully logged in (Demo Mode)!')
+        router.push('/')
+        router.refresh()
+        return
+      } else {
+        toast.error('Invalid credentials for demo mode')
+        throw new Error('Invalid credentials')
+      }
+    }
+
     try {
+      const supabase = createClient()
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -67,7 +103,18 @@ export function useAuth() {
   }
 
   const signOut = async () => {
+    if (!isSupabaseConfigured) {
+      // Demo mode logout
+      setUser(null)
+      localStorage.removeItem('demo-user')
+      toast.success('Successfully logged out (Demo Mode)!')
+      router.push('/')
+      router.refresh()
+      return
+    }
+
     try {
+      const supabase = createClient()
       await supabase.auth.signOut()
       toast.success('Successfully logged out!')
       router.push('/')

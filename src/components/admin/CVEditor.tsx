@@ -4,7 +4,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Download, Save, Palette, Type, Layout, Plus, Trash2 } from 'lucide-react'
-import { fabric } from 'fabric'
 import AnimatedText from '@/components/ui/AnimatedText'
 import toast from 'react-hot-toast'
 
@@ -16,23 +15,33 @@ interface CVSection {
 
 export default function CVEditor() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [canvas, setCanvas] = useState<fabric.Canvas | null>(null)
-  const [selectedObject, setSelectedObject] = useState<fabric.Object | null>(null)
+  const [canvas, setCanvas] = useState<any>(null)
+  const [selectedObject, setSelectedObject] = useState<any>(null)
   const [sections, setSections] = useState<CVSection[]>([])
+  const [fabricLoaded, setFabricLoaded] = useState(false)
+  const [fabric, setFabric] = useState<any>(null)
 
   useEffect(() => {
-    if (canvasRef.current) {
+    // Dynamically import fabric.js
+    import('fabric').then((fabricModule) => {
+      setFabric(fabricModule)
+      setFabricLoaded(true)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (fabricLoaded && fabric && canvasRef.current) {
       const fabricCanvas = new fabric.Canvas(canvasRef.current, {
         width: 595, // A4 width in pixels at 72 DPI
         height: 842, // A4 height in pixels at 72 DPI
         backgroundColor: '#ffffff',
       })
 
-      fabricCanvas.on('selection:created', (e) => {
+      fabricCanvas.on('selection:created', (e: any) => {
         setSelectedObject(e.selected?.[0] || null)
       })
 
-      fabricCanvas.on('selection:updated', (e) => {
+      fabricCanvas.on('selection:updated', (e: any) => {
         setSelectedObject(e.selected?.[0] || null)
       })
 
@@ -49,11 +58,13 @@ export default function CVEditor() {
         fabricCanvas.dispose()
       }
     }
-  }, [])
+  }, [fabricLoaded, fabric])
 
-  const initializeTemplate = (canvas: fabric.Canvas) => {
+  const initializeTemplate = (canvas: any) => {
+    if (!fabric) return
+
     // Header
-    const header = new fabric.Text('Michele Bellitti', {
+    const header = new fabric.FabricText('Michele Bellitti', {
       left: 50,
       top: 50,
       fontSize: 32,
@@ -61,14 +72,14 @@ export default function CVEditor() {
       fill: '#1a1a1a',
     })
 
-    const subtitle = new fabric.Text('AI Engineer & Developer', {
+    const subtitle = new fabric.FabricText('AI Engineer & Developer', {
       left: 50,
       top: 90,
       fontSize: 18,
       fill: '#38d9a9',
     })
 
-    const contact = new fabric.Text(
+    const contact = new fabric.FabricText(
       'michelebellitti272@gmail.com | +39 333 928 7528',
       {
         left: 50,
@@ -82,7 +93,7 @@ export default function CVEditor() {
   }
 
   const addTextElement = () => {
-    if (!canvas) return
+    if (!canvas || !fabric) return
 
     const text = new fabric.IText('Click to edit text', {
       left: 50,
@@ -97,9 +108,9 @@ export default function CVEditor() {
   }
 
   const addSection = (title: string) => {
-    if (!canvas) return
+    if (!canvas || !fabric) return
 
-    const sectionTitle = new fabric.Text(title, {
+    const sectionTitle = new fabric.FabricText(title, {
       left: 50,
       top: 250,
       fontSize: 20,
@@ -151,6 +162,18 @@ export default function CVEditor() {
     const json = canvas.toJSON()
     localStorage.setItem('cv-template', JSON.stringify(json))
     toast.success('Template saved!')
+  }
+
+  if (!fabricLoaded) {
+    return (
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <h1 className="text-5xl font-bold mb-4">Loading CV Editor...</h1>
+          </div>
+        </div>
+      </section>
+    )
   }
 
   return (
