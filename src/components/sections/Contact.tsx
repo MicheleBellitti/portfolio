@@ -40,13 +40,7 @@ export default function Contact() {
               <span className="text-lg">michelebellitti272@gmail.com</span>
             </a>
 
-            <a
-              href="tel:+393339287528"
-              className="flex items-center gap-4 p-4 rounded-lg hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
-            >
-              <Phone className="w-6 h-6 text-primary-500" />
-              <span className="text-lg">+39 333 928 7528</span>
-            </a>
+            
 
             <div className="flex justify-center gap-6 pt-6 border-t border-gray-200 dark:border-dark-border">
               <a

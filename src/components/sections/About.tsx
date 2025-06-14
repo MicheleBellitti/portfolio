@@ -55,9 +55,8 @@ export default function About() {
               cloud platforms.
             </p>
             <p className="text-lg text-gray-700 dark:text-gray-300">
-              Currently working as a Data Engineering Intern at Axyon AI, where
-              I'm optimizing data pipelines and developing next-generation software
-              for automated dataset generation using cutting-edge technologies.
+              Currently working as a Machine Learning Engineer at Prometeia, in the Data Science division, where
+              I'm designing and implementing optimized and scalable AI-based solutions for the financial sector.
             </p>
           </motion.div>
         </div>

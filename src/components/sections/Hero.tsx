@@ -51,8 +51,8 @@ export default function Hero() {
           transition={{ delay: 1.2, duration: 0.8 }}
           className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8"
         >
-          Specializing in Computer Vision, Data Engineering, and creating
-          intelligent solutions with Python, Rust, and modern web technologies.
+          Specializing in Agentic AI, Computer Vision, ML/Data Engineering, and creating
+          intelligent solutions with Python and Rust.
         </motion.p>
 
         <motion.div
